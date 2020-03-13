@@ -161,7 +161,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=argparse.FileType('a'), default=sys.stdout,
                         help='Output file to append schedule to (optional, else print to stdout)')
     parser.add_argument('--source', required=True, help='source name, can be any name resolvable by CDS')
-    parser.add_argument('--tstart', required=True, help='UTC Start time in ISOT format, e.g. 2020-01-01T00:00:00')
+    parser.add_argument('--tstart', required=True, help='UTC start time in ISOT format, e.g. 2020-01-01T00:00:00')
     parser.add_argument('--wait_time', type=float, default=3., help='Wait time between observations in minutes'
                                                                     ' (Default: %(default)s)')
     parser.add_argument('--freq', type=int, default=1370, help='Central frequency in MHz (Default: %(default)s)')
