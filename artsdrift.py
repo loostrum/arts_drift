@@ -16,6 +16,7 @@ WSRT_ALT = 16 * u.m
 WSRT_LOC = EarthLocation.from_geodetic(WSRT_LON, WSRT_LAT, WSRT_ALT)
 
 # CB size and buffer at start/end of observation
+CB_OFFSET = 30 * u.arcmin  # distance between two neighbouring CBs
 CB_HPBW = 45 * u.arcmin  # rounded up from 41 arcmin at 1220 MHz
 CB_BUFFER = 10 * u.arcmin
 
@@ -29,7 +30,7 @@ def get_scan_duration(ncb, dec):
     :return: scan duration (astropy.units.quantity.Quantity)
     """
     # calculate required scan size in arcmin
-    scan_size_raw = ncb * CB_HPBW + 2 * CB_BUFFER
+    scan_size_raw = (ncb - 1) * CB_OFFSET + CB_HPBW + 2 * CB_BUFFER
     # scale by cos(Dec) to get size in RA/HA
     scan_size = scan_size_raw / np.cos(dec)
     # use Earth rotation rate (360 deg per sidereal day) to convert to scan duration
