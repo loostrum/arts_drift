@@ -18,7 +18,7 @@ WSRT_LOC = EarthLocation.from_geodetic(WSRT_LON, WSRT_LAT, WSRT_ALT)
 # CB size and buffer at start/end of observation
 CB_OFFSET = 30 * u.arcmin  # distance between two neighbouring CBs
 CB_HPBW = 45 * u.arcmin  # rounded up from 41 arcmin at 1220 MHz
-CB_BUFFER = 10 * u.arcmin
+CB_BUFFER = 20 * u.arcmin
 
 
 def get_scan_duration(ncb, dec):
