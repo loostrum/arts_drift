@@ -5,15 +5,15 @@ import argparse
 
 import numpy as np
 import astropy.units as u
-from astropy.coordinates import SkyCoord, EarthLocation, FK5
+from astropy.coordinates import SkyCoord, EarthLocation
 from astropy.coordinates.name_resolve import NameResolveError
 from astropy.time import Time, TimeDelta
 
 # WSRT location
-WSRT_LAT = 52.915184 * u.deg  # = 52:54:54.66
-WSRT_LON = 6.60387 * u.deg  # = 06:36:13.93
-WSRT_ALT = 16 * u.m
-WSRT_LOC = EarthLocation.from_geodetic(WSRT_LON, WSRT_LAT, WSRT_ALT)
+WSRT_LOC = EarthLocation.from_geocentric(3828630.63486200943589211,
+                                         443593.39226634375518188,
+                                         5064922.99755000043660402,
+                                         unit=u.m)
 
 # CB size and buffer at start/end of observation
 CB_OFFSET = 30 * u.arcmin  # distance between two neighbouring CBs
@@ -82,25 +82,20 @@ def get_pointing(coord, t):
     :param astropy.time.Time t: UTC time, including location
     :return: ha, dec (astropy.units.quantity.Quantity)
     """
-    # define coordinate system using equinox of date (as opposed to J2000)
-    coord_system = FK5(equinox='J{}'.format(t.decimalyear))
-    # convert source coordinates to apparent coordinates
-    source_apparent = coord.transform_to(coord_system)
-    dec = source_apparent.dec
-    # calculate HA from RA and LST
-    lst = t.sidereal_time('apparent')
-    ha = lst - source_apparent.ra
+    # set observing time
+    coord.obstime = t
+    # calculate apparent ha
+    ha = WSRT_LOC.lon - coord.itrs.spherical.lon
+    # get apparent dec
+    dec = coord.itrs.spherical.lat
     # pointing should be such that source is at 1/2 HBPW + buffer away from ref CB
     # scale by cos(dec) to get correct size in HA
     offset = (.5 * CB_HPBW + CB_BUFFER) / np.cos(dec)
     # point slightly further west (increase HA) so source is east of beam pattern by this amount
     ha += offset
 
-    # ensure ha is in correct range
-    if ha > 180 * u.deg:
-        ha -= 360 * u.deg
-    elif ha < -180 * u.deg:
-        ha += 360 * u.deg
+    # ensure ha is in [-180, 180] degree range
+    ha.wrap_at(180 * u.deg, inplace=True)
     # check if in range of equatorial mount
     if ha > 90 * u.deg:
         print('WARNING: found HA > 90 deg, source is not visible')
