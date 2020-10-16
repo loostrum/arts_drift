@@ -144,13 +144,13 @@ if __name__ == '__main__':
                                      formatter_class=argparse.RawTextHelpFormatter,
                                      epilog='Example usage:\n'
                                             'Full PAF drift scans:\n'
-                                            './artsdrift.py --csv output.csv --src 3C48 --tstart 2020-01-01T00:00:00'
+                                            './artsdrift.py --output output.csv --src 3C48 --tstart 2020-01-01T00:00:00'
                                             '\n\n'
                                             'Only CBs 00 and 33:\n'
-                                            './artsdrift.py --csv output.csv --src 3C48 --tstart 2020-01-01T00:00:00'
+                                            './artsdrift.py --output output.csv --src 3C48 --tstart 2020-01-01T00:00:00'
                                             ' --beams 0 33\n\n'
                                             'Only CBs 01 to 07 and 27 to 32:\n'
-                                            './artsdrift.py --csv output.csv --src 3C48 --tstart 2020-01-01T00:00:00'
+                                            './artsdrift.py --output output.csv --src 3C48 --tstart 2020-01-01T00:00:00'
                                             ' --rows 1 5\n\n'
                                             'Note: --rows and --beams are mutually exclusive')
     parser.add_argument('--output', type=argparse.FileType('a'), default=sys.stdout,
