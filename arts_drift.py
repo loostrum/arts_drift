@@ -19,6 +19,7 @@ WSRT_LOC = EarthLocation.from_geocentric(3828630.63486200943589211,
 CB_OFFSET = 30 * u.arcmin  # distance between two neighbouring CBs
 CB_HPBW = 45 * u.arcmin  # rounded up from 41 arcmin at 1220 MHz
 CB_BUFFER = 20 * u.arcmin
+NOISE_BUFFER = 40 * u.s
 
 
 def get_scan_duration(ncb, dec):
@@ -35,7 +36,7 @@ def get_scan_duration(ncb, dec):
     scan_size = scan_size_raw / np.cos(dec)
     # use Earth rotation rate (360 deg per sidereal day) to convert to scan duration
     rate = 360 * u.deg / u.sday
-    duration = scan_size / rate
+    duration = scan_size / rate + NOISE_BUFFER
     # return duration in seconds
     return duration.to(u.s)
 
